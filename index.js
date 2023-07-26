@@ -1,11 +1,11 @@
 // REST API using MongoDb
 // imports
+const cors = require("cors")
 require("dotenv").config()
 const { format } = require("date-fns")
 const express = require("express")
 const YourRoutes = require("./routes/routes")
 const { mongoose } = require("mongoose")
-
 // constants
 const MONGO_URI = process.env.MONGO_URI // get the uri from MongoDb Atlas
 const PORT = process.env.PORT || 3000
@@ -14,6 +14,7 @@ const PORT = process.env.PORT || 3000
 const app = express()
 
 // middleware
+app.use(cors())
 app.use(express.json()) // adds body to request (req.body)
 app.use((req, _, next) => {
   const currentDate = format(new Date(), "HH:mm:ss dd/MM/yyyy")
