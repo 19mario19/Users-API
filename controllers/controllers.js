@@ -6,7 +6,8 @@ const handleDataNotFound = require("../functions/handleDataNotFound")
 async function getAll(_, res) {
   try {
     const users = await User.find({}).sort({ createdAt: -1 })
-    res.status(200).json(users)
+    const count = await User.countDocuments()
+    res.status(200).json({ count: count, users: users })
   } catch (error) {
     res.status(400).json({ error: error.message })
   }
