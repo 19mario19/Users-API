@@ -6,8 +6,7 @@ const handleDataNotFound = require("../functions/handleDataNotFound")
 async function getAll(_, res) {
   try {
     const users = await User.find({}).sort({ createdAt: -1 })
-    const count = await User.countDocuments()
-    res.status(200).json({ count: count, users: users })
+    res.status(200).json(users)
   } catch (error) {
     res.status(400).json({ error: error.message })
   }
@@ -25,9 +24,24 @@ async function getOne(req, res) {
 }
 // post one
 async function postOne(req, res) {
-  const data = req.body
+  const { first_name, last_name, age, city, email } = req.body
+  const emptyFields = []
+
+  const list = ["first_name", "last_name", "age", "city", "email"]
+  list.forEach((property) => {
+    if (!req.body[property]) {
+      emptyFields.push(property)
+    }
+  })
+
+  if (emptyFields.length > 0) {
+    return res.status(400).json({
+      error: "Please fill in all the required fields",
+      emptyFields,
+    })
+  }
   try {
-    const user = await User.create({ ...data })
+    const user = await User.create({ first_name, last_name, age, city, email })
     res.status(200).json(user)
   } catch (error) {
     res.status(400).json({ error: error.message })
@@ -54,6 +68,17 @@ async function deleteOne(req, res) {
     res.status(400).json({ error: error.message })
   }
 }
+
+// delete one
+async function deleteAll(_, res) {
+  try {
+    const user = await User.deleteMany({})
+    console.log(user)
+    res.status(200).json({ message: `All documents have been deleted.` })
+  } catch (error) {
+    res.status(400).json({ error: error.message })
+  }
+}
 // update one
 async function updateOne(req, res) {
   const data = req.body
@@ -76,5 +101,6 @@ module.exports = {
   postOne,
   postMany,
   deleteOne,
+  deleteAll,
   updateOne,
 }
