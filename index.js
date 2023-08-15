@@ -22,7 +22,7 @@ app.use((req, _, next) => {
   next()
 })
 
-const apiPathName = "data"
+const apiPathName = "users"
 const fullPath = `/api/${apiPathName}/`
 
 //routes
